@@ -1,5 +1,5 @@
 # Ex05 Image Carousel
-
+## Date:
 
 ## AIM
 To create a Image Carousel using React 
@@ -40,158 +40,115 @@ Clean up the interval when the component unmounts using clearInterval to prevent
 
 ## PROGRAM
 
-App.jsx
+ImageCarousel.jsx
 
-```
-import { useState, useEffect } from "react";
-import "./App.css";
-import sun from "./sun.jpeg";
-import moon from "./moon.jpg";
-import earth from "./earth.jpg";
+```jsx
 
-function App() {
-  const images = [
-    { src: sun, alt: "Sun" },
-    { src: moon, alt: "Moon" },
-    { src: earth, alt: "Earth" },
-  ];
+import React, { useState, useEffect } from "react";
 
+const ImageCarousel = ({ images, interval = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const nextImage = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    const timer = setInterval(nextImage, interval);
+    return () => clearInterval(timer);
+  }, [interval, images.length]);
 
   return (
-    <div className="carousel">
-        <h1>   Solar Carousel 🌞🌙🌍</h1>
-      <div className="image-container">
-        <img
-          src={images[currentIndex].src}
-          alt={images[currentIndex].alt}
-          className="fade"
-        />
+    <div>
+      <img
+        src={images[currentIndex]}
+        alt={`Slide ${currentIndex + 1}`}
+      />
+      <div>
+        <button onClick={prevImage}>Previous</button>
+        <button onClick={nextImage}>Next</button>
       </div>
-      <div className="dots">
+      <div>
         {images.map((_, index) => (
-          <span
+          <button
             key={index}
-            className={index === currentIndex ? "dot active" : "dot"}
             onClick={() => setCurrentIndex(index)}
-          ></span>
+            disabled={index === currentIndex}
+          >
+            ●
+          </button>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default ImageCarousel;
+
+
+```
+
+App.jsx
+
+```jsx
+
+import React from "react";
+import "./App.css";
+import ImageCarousel from "./ImageCarousel";
+
+const App = () => {
+  const imageList = [
+    'https://picsum.photos/1200/800?random=1',
+    'https://picsum.photos/1200/800?random=2',
+    'https://picsum.photos/1200/800?random=3',
+    'https://picsum.photos/1200/800?random=4',
+    'https://picsum.photos/1200/800?random=5',
+  ];
+
+  return (
+    <div>
+      <h2>Simple Image Carousel</h2>
+      <ImageCarousel images={imageList} interval={3000} />
+    </div>
+  );
+};
 
 export default App;
 
 ```
 
-App.css
+Main.jsx
+
+```jsx
+
+import { useState } from 'react'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+)
+
 
 ```
-/* Center everything on the page */
-.carousel {
-  background-color: #001f3f;
-  color: white;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* vertical center */
-  align-items: center; /* horizontal center */
-  text-align: center;
-  overflow: hidden;
-  margin: 0;
-}
-
-/* Title styling */
-.carousel h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-/* Image box styling */
-.image-container {
-  width: 400px;
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-}
-
-/* Image fit and animation */
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
-  transition: opacity 1s ease-in-out;
-}
-
-/* Dot controls */
-.dots {
-  margin-top: 20px;
-}
-
-.dot {
-  height: 12px;
-  width: 12px;
-  margin: 0 5px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.dot.active {
-  background-color: white;
-}
-
-.fade {
-  animation: fadeEffect 1s ease-in-out;
-}
-
-@keyframes fadeEffect {
-  from {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Remove unwanted scroll bars or padding */
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-```
-
 
 ## OUTPUT
 
-![alt text](sun.png)
 
+<img width="1916" height="1140" alt="Screenshot 2025-11-10 113805" src="https://github.com/user-attachments/assets/92d7eee8-acb2-4da9-ad27-afa1330e9106" />
 
+<img width="1919" height="1142" alt="Screenshot 2025-11-10 113824" src="https://github.com/user-attachments/assets/f570d97e-bad3-4e0f-b70d-6a3f7ef0954c" />
 
- ![alt text](earth.png) 
- 
- 
- 
- ![alt text](moon.png)
 
 ## RESULT
 The program for creating Image Carousel using React is executed successfully.
